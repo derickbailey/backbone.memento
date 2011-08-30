@@ -39,7 +39,7 @@ store and restore method.
 ````
 SomeModel = Backbone.Model.extend({
   initialize: function(){
-    this.memento = new Backbone.Memento();
+    this.memento = new Backbone.Memento(this);
   },
 
   store: function(){
