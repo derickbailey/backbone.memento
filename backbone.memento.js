@@ -28,9 +28,24 @@ Backbone.Memento = (function(model){
 
   function removeAttributes(model, attrsToRemove){
     for (var index in attrsToRemove){
-      attr = removedAttrs[index];
+      attr = attrsToRemove[index];
       model.unset(attr);
     }
+  }
+
+  function restoreState(last){
+      //get the previous state
+      var attrs = attributeStack[last];
+
+      //handle removing attributes that were added
+      var removedAttrs = getRemovedAttrDiff(attrs, model.toJSON());
+      removeAttributes(model, removedAttrs);
+
+      //restore the previous state
+      model.set(attrs);
+
+      //destroy the no-longer-current state
+      delete attributeStack[last];
   }
   
   return {
@@ -45,18 +60,19 @@ Backbone.Memento = (function(model){
       if (last < 0)
         return null;
 
-      //get the previous state
-      attrs = attributeStack[last];
+      restoreState(last);
+    },
 
-      //handle removing attributes that were added
-      removedAttrs = getRemovedAttrDiff(attrs, model.toJSON());
-      removeAttributes(model, removedAttrs);
+    clear: function(){
+      if(attributeStack.length === 0){
+        return null;
+      }
 
-      //restore the previous state
-      model.set(attrs);
+      
 
-      //destroy the no-longer-current state
-      delete attributeStack[last];
+      restoreState(0);
+      // restoreState deleted item 0, but really we should be starting from scratch.
+      attributeStack = new Array();
     }
   }
 });
