@@ -1,4 +1,4 @@
-// Backbone.Memento v0.2.0
+// Backbone.Memento v0.3.0
 //
 // Copyright (C)2011 Derick Bailey, Muted Solutions, LLC
 // Distributed Under MIT Liscene
@@ -9,7 +9,7 @@
 // ----------------------------
 // Backbone.Memento
 // ----------------------------
-Backbone.Memento = function(model, config){
+Backbone.Memento = function(structure, config){
   this.version = "0.2.0";
 
   config = _.extend({
@@ -17,6 +17,7 @@ Backbone.Memento = function(model, config){
   }, config);
 
   var attributeStack;
+  var type = (structure instanceof Backbone.Model) ? "model" : "collection";
 
   function getAddedAttrDiff(newAttrs, oldAttrs){
     var removedAttrs = [];
@@ -39,10 +40,14 @@ Backbone.Memento = function(model, config){
     return removedAttrs;
   }
 
-  function removeAttributes(model, attrsToRemove){
+  function removeAttributes(structure, attrsToRemove){
     for (var index in attrsToRemove){
       var attr = attrsToRemove[index];
-      model.unset(attr);
+      if (type === "model"){
+        structure.unset(attr);
+      } else {
+        structure.remove(attr);
+      }
     }
   }
 
@@ -50,18 +55,23 @@ Backbone.Memento = function(model, config){
     //get the previous state
     var oldAttrs = attributeStack[last];
     if (oldAttrs === undefined){ return; }
+
     oldAttrs = dropIgnored(oldAttrs, restoreConfig);
 
     //get the current state
-    var currentAttrs = model.toJSON();
+    var currentAttrs = structure.toJSON();
     currentAttrs = dropIgnored(currentAttrs, restoreConfig);
 
     //handle removing attributes that were added
     var removedAttrs = getAddedAttrDiff(oldAttrs, currentAttrs);
-    removeAttributes(model, removedAttrs);
+    removeAttributes(structure, removedAttrs);
 
     //restore the previous state
-    model.set(oldAttrs);
+    if (type === "model"){
+      structure.set(oldAttrs);
+    } else {
+      structure.reset(oldAttrs);
+    }
 
     //destroy the no-longer-current state
     delete attributeStack[last];
@@ -79,12 +89,14 @@ Backbone.Memento = function(model, config){
   }
 
   function initialize(){
-    attributeStack = new Array();
+    attributeStack = [];
   }
 
   this.store = function(){
-    var attrs = model.toJSON();
+    var attrs = structure.toJSON();
+
     attrs = dropIgnored(attrs, config);
+
     attributeStack.push(attrs);
   }
   
@@ -94,14 +106,14 @@ Backbone.Memento = function(model, config){
     }
 
     var last = attributeStack.length-1;
-    if (last < 0) {
+    if (last < 0){
       return null;
     }
 
     restoreState(last, restoreConfig);
   }
 
-  this.reset = function(){
+  this.restart = function(){
     if(attributeStack.length === 0){
       return null;
     }
@@ -109,6 +121,12 @@ Backbone.Memento = function(model, config){
     // restoreState deleted item 0, but really 
     // we should be starting from scratch.
     initialize();
+  }
+
+  // For backwards compatibility, collections cannot have a property
+  // named reset for conflict reasons.
+  if (type === "model"){
+    this.reset = this.restart;
   }
 
   initialize();

@@ -5,6 +5,13 @@ AModel = Backbone.Model.extend({
   }
 });
 
+ACollection = Backbone.Collection.extend({
+  initialize: function(){
+    var memento = new Backbone.Memento(this);
+    _.extend(this, memento);
+  }
+});
+
 IgnoredAttrsModel = Backbone.Model.extend({
   initialize: function(){
     var memento = new Backbone.Memento(this, {
