@@ -7,6 +7,7 @@
 // http://github.com/derickbailey/backbone.memento
 
 Backbone.Memento = (function(Backbone, _){
+  'use strict';
   // ----------------------------
   // Memento: the public API
   // ----------------------------
@@ -99,7 +100,7 @@ Backbone.Memento = (function(Backbone, _){
     }
 
     function restoreState(previousState, restoreConfig){
-      oldAttrs = dropIgnored(previousState, restoreConfig);
+      var oldAttrs = dropIgnored(previousState, restoreConfig);
 
       //get the current state
       var currentAttrs = structure.toJSON();
