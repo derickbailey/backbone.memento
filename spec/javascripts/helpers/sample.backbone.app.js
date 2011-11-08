@@ -20,3 +20,10 @@ IgnoredAttrsModel = Backbone.Model.extend({
     _.extend(this, memento);
   }
 });
+
+SetOptionsModel = Backbone.Model.extend({
+  initialize: function(){
+    var memento = new Backbone.Memento(this, {setOptions: {memento: true}});
+    _.extend(this, memento);
+  }
+});
