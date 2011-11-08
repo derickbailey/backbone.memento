@@ -15,7 +15,7 @@ Backbone.Memento = (function(Backbone, _){
   var Memento = function(structure, config){
     this.version = "0.4.1";
 
-    config = _.extend({ignore: []}, config);
+    config = _.extend({ignore: [], setOptions: {}}, config);
 
     var serializer = new Serializer(structure, config);
     var mementoStack = new MementoStack(structure, config);
@@ -48,10 +48,10 @@ Backbone.Memento = (function(Backbone, _){
   var TypeHelper = function(structure){
     if (structure instanceof Backbone.Model) {
       this.removeAttr = function(data){ structure.unset(data); };
-      this.restore = function(data){ structure.set(data); };
+      this.restore = function(data, options){ structure.set(data, options); };
     } else {
       this.removeAttr = function(data){ structure.remove(data); };
-      this.restore = function(data){ structure.reset(data); };
+      this.restore = function(data, options){ structure.reset(data, options); };
     }
   };
 
@@ -111,7 +111,7 @@ Backbone.Memento = (function(Backbone, _){
       var removedAttrs = getAddedAttrDiff(oldAttrs, currentAttrs);
       removeAttributes(structure, removedAttrs);
 
-      typeHelper.restore(oldAttrs);
+      typeHelper.restore(oldAttrs, restoreConfig.setOptions);
     }
 
     this.serialize = function(){
