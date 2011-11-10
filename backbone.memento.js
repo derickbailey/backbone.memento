@@ -1,9 +1,9 @@
 // Backbone.Memento v0.4.1
 //
 // Copyright (C)2011 Derick Bailey, Muted Solutions, LLC
-// Distributed Under MIT Liscene
+// Distributed Under MIT License
 //
-// Documentation and Full Licence Availabe at:
+// Documentation and Full License Available at:
 // http://github.com/derickbailey/backbone.memento
 
 Backbone.Memento = (function(Backbone, _){
