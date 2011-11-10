@@ -123,7 +123,6 @@ changed.
 
 ### memento.restart (formerly reset)
 
-:wa
 This method effectively rolls your structure back to the first store point, no matter how
 many times it has been stored in the memento.
 
