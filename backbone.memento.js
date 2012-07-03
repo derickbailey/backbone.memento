@@ -19,25 +19,42 @@ Backbone.Memento = (function(Backbone, _){
 
     var serializer = new Serializer(structure, config);
     var mementoStack = new MementoStack(structure, config);
+    var dirtyState;
 
     var restoreState = function (previousState, restoreConfig){
-      if (!previousState){ return; }
+      if (!previousState){ return false; }
       serializer.deserialize(previousState, restoreConfig);
+      return true;
     };
 
     this.store = function(){
+      dirtyState = null;
       var currentState = serializer.serialize();
       mementoStack.push(currentState);
     };
 
     this.restore = function(restoreConfig){
-      var previousState = mementoStack.pop();
-      restoreState(previousState, restoreConfig);
+      if (mementoStack.atTop()) {
+        dirtyState = serializer.serialize();
+      }
+      var previousState = mementoStack.previousElement();
+      return restoreState(previousState, restoreConfig);
+    };
+    
+    this.undo = this.restore;
+    
+    this.redo = function(restoreConfig){
+      var nextState = mementoStack.nextElement();
+      if (!nextState) {
+        nextState = dirtyState;
+        dirtyState = null;
+      }
+      return restoreState(nextState, restoreConfig);
     };
 
     this.restart = function(restoreConfig){
       var previousState = mementoStack.rewind();
-      restoreState(previousState, restoreConfig);
+      return restoreState(previousState, restoreConfig);
     };
   };
 
@@ -132,18 +149,35 @@ Backbone.Memento = (function(Backbone, _){
   // ----------------------------
   var MementoStack = function(structure, config){
     var attributeStack;
+    var nextAttributeIndex;
 
     function initialize(){
       attributeStack = [];
+      nextAttributeIndex = -1;
+    }
+    
+    this.atTop = function(){
+      return (nextAttributeIndex == attributeStack.length - 1);
     }
 
     this.push = function(attrs){
+      // Truncate the array to remove the attributes after the next restore point
+      attributeStack.length = nextAttributeIndex + 1;
       attributeStack.push(attrs);
+      nextAttributeIndex++;
     }
     
-    this.pop = function(restoreConfig){
-      var oldAttrs = attributeStack.pop();
+    this.previousElement = function(restoreConfig){
+      if (nextAttributeIndex == -1) return;
+      var oldAttrs = attributeStack[nextAttributeIndex];
+      nextAttributeIndex--;
       return oldAttrs;
+    }
+
+    this.nextElement = function(restoreConfig){
+      if (this.atTop()) return;
+      nextAttributeIndex++;
+      return attributeStack[nextAttributeIndex + 1];
     }
 
     this.rewind = function(){
