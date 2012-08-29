@@ -46,7 +46,7 @@ Backbone.Memento = (function(Backbone, _){
   // restoring attributes, on models and collections
   // ----------------------------
   var TypeHelper = function(structure){
-    if (structure instanceof Backbone.Model) {
+    if (structure instanceof Backbone.Model || !(structure.reset)) {
       this.removeAttr = function(data){ structure.unset(data); };
       this.restore = function(data){ structure.set(data); };
     } else {
