@@ -1,0 +1,19 @@
+{
+  "name": "backbone.memento",
+  "main": "backbone.memento.js",
+  "version": "0.4.2",
+  "homepage": "https://github.com/jmmerino/backbone.memento",
+  "authors": [
+    "Derick Bailey <derickbailey@gmail.com>"
+  ],
+  "description": "store and restore your model's state",
+  "keywords": [
+    "backbone",
+    "model",
+    "memento"
+  ],
+  "dependencies": {
+    "backbone": ">= 1.0.0"
+  },
+  "license": "MIT"
+}
