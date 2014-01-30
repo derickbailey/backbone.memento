@@ -1,4 +1,4 @@
-// Backbone.Memento v0.4.1a
+// Backbone.Memento v0.4.2
 //
 // Copyright (C)2011 Derick Bailey, Muted Solutions, LLC
 // Distributed Under MIT License
@@ -13,7 +13,7 @@ Backbone.Memento = (function(Backbone, _){
   // Memento: the public API
   // ----------------------------
   var Memento = function(structure, config){
-    this.version = "0.4.1a";
+    this.version = "0.4.2";
 
     config = _.extend({ignore: []}, config);
 
@@ -40,8 +40,9 @@ Backbone.Memento = (function(Backbone, _){
       restoreState(previousState, restoreConfig);
     };
 
-    this.consolide = function(restoreConfig){
+    this.consolidate = function(restoreConfig){
       mementoStack = new MementoStack(structure, config);
+      this.store();
     };
   };
 
