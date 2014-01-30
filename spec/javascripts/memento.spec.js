@@ -76,5 +76,55 @@ describe("memento", function(){
       expect(changed).toBeTruthy();
     });
   });
+
+  describe("when there are changes but the model is consolidated", function(){
+
+    beforeEach(function(){
+      this.model.set({foo: "bar"});
+      this.model.store();
+      this.model.set({foo: "other"});      
+      this.model.store();
+    });
+
+    it("should not restore the previous version", function(){
+      this.model.consolidate();
+      this.model.restore();
+      expect(this.model.get("foo")).toBe("other");
+    });
+
+    it("should not restart the model", function(){
+      this.model.consolidate();
+      this.model.restart();
+      expect(this.model.get("foo")).toBe("other");
+    });    
+
+
+  });
+
+  describe("when there are changes after the model is consolidated", function () {
+     beforeEach(function () {
+       this.model.set({foo: 'bar'});       
+       this.model.consolidate();
+
+       this.model.set({foo: 'baz'});       
+     });
+
+     it("should restore the previous version consolidated", function(){
+      this.model.restore();
+
+      expect(this.model.get("foo")).toBe('bar');
+     });
+
+     it("should restart the version consolidated", function(){
+      this.model.set({foo: 'other'});
+      this.model.store();
+      this.model.set({foo: 'yeeep'});
+      this.model.store();
+
+      this.model.restart();
+
+      expect(this.model.get("foo")).toBe('bar');
+     })
+  })
   
 });
