@@ -209,10 +209,10 @@ myModel.get("foo"); // => "bar"
 
 ### Set And Unset Attributes
 
-Backbone.Memento will set and unset attributes, when poping from the memento stack.
-For example, if you add an attribute after storing your models state, and then later
+Backbone.Memento will set and unset attributes when popping from the memento stack.
+For example, if you add an attribute after storing your model's state, and then later
 restore back to the previous state, the attribute that you added will be unset. The
-unset attribute will have it's change event fired, as well.
+unset attribute will have its change event fired as well.
 
 ``` javascript
 myModel = new SomeModel();
