@@ -6,8 +6,25 @@
 // Documentation and Full License Available at:
 // http://github.com/derickbailey/backbone.memento
 
-Backbone.Memento = (function(Backbone, _){
+( function( root, factory ) {
+	// Set up Backbone-relational for the environment. Start with AMD.
+	if ( typeof define === 'function' && define.amd ) {
+		define( [ 'exports', 'backbone', 'underscore' ], factory );
+	}
+	// Next for Node.js or CommonJS.
+	else if ( typeof exports !== 'undefined' ) {
+		factory( exports, require( 'backbone' ), require( 'underscore' ) );
+	}
+	// Finally, as a browser global. Use `root` here as it references `window`.
+	else {
+		factory( root, root.Backbone, root._ );
+	}
+}( this, function( exports, Backbone, _ ) {
+
   'use strict';
+
+Backbone.Memento = (function(Backbone, _){
+
 
   // ----------------------------
   // Memento: the public API
@@ -157,3 +174,6 @@ Backbone.Memento = (function(Backbone, _){
 
   return Memento;
 })(Backbone, _);
+
+
+});
