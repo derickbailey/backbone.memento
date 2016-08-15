@@ -12,7 +12,7 @@ any round trips.
 
 ## Getting Started
 
-It's easy to get up and running. You only need to have Backbone (including underscore.js - 
+It's easy to get up and running. You only need to have Backbone (including underscore.js -
 a requirement for Backbone) in your page before including the backbone.memento
 plugin.
 
@@ -26,7 +26,7 @@ Namely, it uses the `set` and `unset` methods of models and `reset` and `remove`
 
 ### Get The Memento Plugin
 
-Download the `backbone.memento.js` file from this github repository and copy it into 
+Download the `backbone.memento.js` file from this github repository and copy it into
 your javascripts folder. Add the needed `<script>` tag to bring the plugin into any page
 that wishes to use it. Be sure to include the modelbinding file _after_ the backbone.js file.
 
@@ -52,8 +52,8 @@ SomeModel = Backbone.Model.extend({
 
 #### Cherry-Picking Methods
 
-You can also configure a model by instantiating the memento with your model's 
-initializer and then providing access to the methods as needed, or by using the 
+You can also configure a model by instantiating the memento with your model's
+initializer and then providing access to the methods as needed, or by using the
 methods internally.
 
 ``` javascript
@@ -102,24 +102,26 @@ someCollection.restore();
 someCollection.at(0).get("something"); //=> "whatever"
 ```
 
-### 
+###
 
 ## Memento Methods
 
 There are several methods provided by Backbone.Memento, to allow you more control over
-how the memento object works, and when. 
+how the memento object works, and when.
 
 ### memento.store
 
 This method creates a copy of your structure's current state, as a memento, and stores it in
-a stack (first in, last out). 
+a stack (first in, last out).
 
 ### memento.restore
 
 This method takes the previously stored state, and restores your structure to this state. You
-can call this as many times as you have called `store`. Calling this method more times 
+can call this as many times as you have called `store`. Calling this method more times
 than you have called store will result in a no-operation and your structure will not be
 changed.
+
+Optionally, you can pass the `{ keepState: true }` option to the `restore` call to keep the previous state in the stack. You can call `restore({ keepState: true })` as many times as you want and the model will always be restored to the point where your last `store` is called.
 
 ### memento.restart (formerly reset)
 
@@ -192,7 +194,7 @@ ignore list.
 
 With this in place, you can push your model's state onto the memento stack by calling
 `store`, and pop the previously stored state back into the model (destroying the current
-state in the process) by calling `restore`. 
+state in the process) by calling `restore`.
 
 ``` javascript
 myModel = new SomeModel();
