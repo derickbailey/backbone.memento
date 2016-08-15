@@ -40,6 +40,21 @@ describe("memento", function(){
     });
   });
 
+  describe("when restoring with keepState option", function(){
+    beforeEach(function(){
+      this.model.set({foo: "first"});
+      this.model.store();
+      this.model.set({foo: "second"});
+      this.model.store();
+    });
+
+    it("should always restore to the state at the last .store call", function(){
+      this.model.restore({ keepState: true });
+      this.model.restore({ keepState: true });
+      expect(this.model.get("foo")).toBe("second");
+    });
+  });
+
   describe("when mementoing twice and rolling back once", function(){
     beforeEach(function(){
       this.model.set({foo: "bar"});
@@ -76,5 +91,5 @@ describe("memento", function(){
       expect(changed).toBeTruthy();
     });
   });
-  
+
 });
